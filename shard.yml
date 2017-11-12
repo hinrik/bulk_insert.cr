@@ -1,0 +1,15 @@
+name: bulk_insert
+version: 0.1.0
+
+authors:
+  - Hinrik Örn Sigurðsson <hinrik.sig@gmail.com>
+
+dependencies:
+  db:
+    github: crystal-lang/crystal-db
+
+development_dependencies:
+  sqlite3:
+    github: crystal-lang/crystal-sqlite3
+
+license: MIT
