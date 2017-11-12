@@ -5,11 +5,12 @@ class BulkInsert
 
   alias NrRows = Int32
   @statements = {} of NrRows => DB::PoolStatement
+  DEFAULT_MAX_ARGS = 999 # SQLite's maximum. Pg and MySQL have higher limits
 
   # Example:
   #
   #   BulkInsert.new(db, "INSERT INTO table (col1, col2) VALUES", 2)
-  def initialize(db, sql_start, nr_columns, max_args = 999)
+  def initialize(db, sql_start, nr_columns, max_args = DEFAULT_MAX_ARGS)
     template = "(#{ (1..nr_columns).map { %[?] }.join(%[,]) })"
 
     nr_args = max_args - max_args % nr_columns
