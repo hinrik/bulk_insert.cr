@@ -16,14 +16,16 @@ describe BulkInsert do
 
     db.exec "BEGIN"
     rows = (1..1000).map { ["quux", 1] }
+    rows << ["sfdsf", 9]
     count = 0
-    bulk.exec_for_rows(rows) do |rows_inserted|
+    last_id = bulk.exec_for_rows(rows) do |rows_inserted|
       count += rows_inserted
     end
     count.should eq(rows.size)
+    last_id.should eq(1002)
     db.exec "COMMIT"
 
     total = db.scalar "SELECT COUNT(*) FROM test"
-    total.should eq(1001)
+    total.should eq(1002)
   end
 end
