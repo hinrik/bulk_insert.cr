@@ -7,7 +7,7 @@ describe BulkInsert do
     db.exec "CREATE TABLE test (foo string, bar integer)"
 
     sql = "INSERT INTO test (foo, bar) VALUES"
-    bulk = BulkInsert.new(db, sql, nr_columns: 2, max_args: 999)
+    bulk = BulkInsert.new(db, 2, sql, max_args: 999)
 
     row = ["quux", 1]
     result = bulk.exec(row)

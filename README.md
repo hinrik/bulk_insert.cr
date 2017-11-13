@@ -27,7 +27,7 @@ require "bulk_insert"
 
 db = DB.open "sqlite3::memory:";
 db.exec "CREATE TABLE mytable (name string, count integer)"
-bulk = BulkInsert.new(db, sql, nr_columns: 2)
+bulk = BulkInsert.new(db, 2, sql)
 
 data = [["foo", 5], ["bar", 3], ["baz", 9]]
 sql = "INSERT INTO mytable (name, count) VALUES"

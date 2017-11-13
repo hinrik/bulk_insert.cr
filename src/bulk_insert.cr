@@ -9,14 +9,14 @@ class BulkInsert
 
   # Example:
   #
-  #   BulkInsert.new(db, "INSERT INTO table (col1, col2) VALUES", 2)
-  def initialize(db, sql_start, nr_columns, max_args = DEFAULT_MAX_ARGS)
+  #   BulkInsert.new(db, 2, "INSERT INTO table (col1, col2) VALUES")
+  def initialize(db, nr_columns, sql_prefix, sql_suffix = "", max_args = DEFAULT_MAX_ARGS)
     template = "(#{ (1..nr_columns).map { %[?] }.join(%[,]) })"
 
     nr_args = max_args - max_args % nr_columns
     while nr_args >= nr_columns
       nr_rows = nr_args / nr_columns
-      sql = "#{sql_start} #{ (1..nr_rows).map { template }.join(%[, ]) }"
+      sql = "#{sql_prefix} #{ (1..nr_rows).map { template }.join(%[, ]) } #{sql_suffix}"
       @statements[nr_rows] = db.build sql
       nr_args /= 2
       nr_args -= nr_args % nr_columns
