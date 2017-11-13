@@ -34,7 +34,7 @@ class BulkInsert
 
     all_nr_rows = @statements.keys
     i = 0
-    last_id = nil
+    last_result : DB::ExecResult?
     while remaining > 0
       nr_rows = all_nr_rows[i]
       statement = @statements[nr_rows]
@@ -45,13 +45,12 @@ class BulkInsert
 
       position = rows.size - remaining
       args = rows[position...position+nr_rows].flatten
-      result = statement.exec args
-      last_id = result.last_insert_id if result.responds_to? :last_insert_id
+      last_result = statement.exec args
       remaining -= nr_rows
       yield nr_rows
     end
 
-    last_id
+    last_result
   end
 
   def exec_for_rows(rows)
