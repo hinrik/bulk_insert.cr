@@ -26,25 +26,26 @@ require "db"
 require "sqlite3"
 require "bulk_insert"
 
-db = DB.open "sqlite3::memory:";
-db.exec "CREATE TABLE mytable (name string, count integer)"
+DB.connect "sqlite3::memory:" do |conn|
+  conn.exec "CREATE TABLE mytable (name string, count integer)"
 
-sql_prefix = "INSERT INTO mytable (name, count) VALUES"
-bulk = BulkInsert.new(2, sql_prefix)
+  sql_prefix = "INSERT INTO mytable (name, count) VALUES"
+  bulk = BulkInsert.new(2, sql_prefix)
 
-# fast bulk importing
-data = [["foo", 5], ["bar", 3], ["baz", 9]]
-db.transaction do |tx|
-  bulk.exec_many(tx.connection, data) do |nr_rows, result|
-    puts "Processed #{nr_rows} rows"
+  # fast bulk importing
+  data = [["foo", 5], ["bar", 3], ["baz", 9]]
+  conn.transaction do |tx|
+    bulk.exec_many(conn, data) do |nr_rows, result|
+      puts "Processed #{nr_rows} rows"
+    end
+
+    # blockless form
+    bulk.exec_many(conn, data)
   end
 
-  # blockless form
-  bulk.exec_many(tx.connection, data)
+  # also supports single-row insert
+  result = bulk.exec conn, ["bla", 123]
 end
-
-# also supports single-row insert
-result = bulk.exec db, ["bla", 123]
 ```
 
 ## How it works
