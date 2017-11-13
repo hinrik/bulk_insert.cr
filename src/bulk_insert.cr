@@ -23,18 +23,21 @@ class BulkInsert
     end
   end
 
+  def exec(row)
+    @statements[1].exec(row)
+  end
+
   # Example:
   #
   #   [["foo", 4], ["bar", 5]]
-  #   bulk.exec_for_rows(rows) do |nr_rows|
+  #   lk.exec_many(rows) do |nr_rows, result|
   #     update_progress(nr_rows)
   #   end
-  def exec_for_rows(rows)
+  def exec_many(rows)
     remaining = rows.size
 
     all_nr_rows = @statements.keys
     i = 0
-    last_result : DB::ExecResult?
     while remaining > 0
       nr_rows = all_nr_rows[i]
       statement = @statements[nr_rows]
@@ -45,16 +48,13 @@ class BulkInsert
 
       position = rows.size - remaining
       args = rows[position...position+nr_rows].flatten
-      last_result = statement.exec args
+      yield nr_rows, statement.exec(args)
       remaining -= nr_rows
-      yield nr_rows
     end
-
-    last_result
   end
 
-  def exec_for_rows(rows)
-    exec_for_rows(rows) {}
+  def exec_many(rows)
+    exec_many(rows) {}
   end
 end
 

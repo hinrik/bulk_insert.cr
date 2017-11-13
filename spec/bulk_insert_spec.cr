@@ -9,21 +9,22 @@ describe BulkInsert do
     sql = "INSERT INTO test (foo, bar) VALUES"
     bulk = BulkInsert.new(db, sql, nr_columns: 2, max_args: 999)
 
-    rows = [["quux", 1]]
-    bulk.exec_for_rows(rows) do |rows_inserted|
-      rows_inserted.should eq(1)
-    end
+    row = ["quux", 1]
+    result = bulk.exec(row)
+    result.should be_a(DB::ExecResult)
+    result.rows_affected.should eq(1)
 
     db.exec "BEGIN"
     rows = (1..1000).map { ["quux", 1] }
     rows << ["sfdsf", 9]
-    count = 0
-    last_result = bulk.exec_for_rows(rows) do |rows_inserted|
-      count += rows_inserted
+    processed, affected = 0, 0
+    bulk.exec_many(rows) do |nr_rows, result|
+      processed += nr_rows
+      result.should be_a(DB::ExecResult)
+      affected += result.rows_affected
     end
-    count.should eq(rows.size)
-    last_result.should be_a(DB::ExecResult)
-    last_result.last_insert_id.should eq(1002) if last_result
+    processed.should eq(rows.size)
+    affected.should eq(rows.size)
     db.exec "COMMIT"
 
     total = db.scalar "SELECT COUNT(*) FROM test"
