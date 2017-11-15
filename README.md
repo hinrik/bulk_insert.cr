@@ -2,9 +2,8 @@
 
 Helper class to perform batched `INSERT`s on a SQL database.
 
-When inserting large amounts of rows at a time, including values for
-multiple rows in a single `INSERT` is faster than executing an `INSERT`
-for every row.
+When inserting many of rows at a time, including values for multiple rows
+in a single `INSERT` is faster than executing an `INSERT` for every row.
 
 This class takes care of that for you, including preparing the necessary
 statements and executing them for any number of rows.
@@ -69,7 +68,7 @@ fewest statements possible.
 
 ## Contributing
 
-1. Fork it (https://github.com/hinrik/bulk_insert/fork)
+1. Fork it (https://github.com/hinrik/bulk_insert.cr/fork)
 2. Create your feature branch (git checkout -b my-new-feature)
 3. Commit your changes (git commit -am 'Add some feature')
 4. Push to the branch (git push origin my-new-feature)
@@ -77,4 +76,4 @@ fewest statements possible.
 
 ## Contributors
 
-- [Hinrik Örn Sigurðsson](https://github.com/hinrik) Hinrik Örn Sigurðsson - creator, maintainer
+- [Hinrik Örn Sigurðsson](https://github.com/hinrik) - creator, maintainer
