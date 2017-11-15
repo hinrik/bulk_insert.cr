@@ -1,6 +1,9 @@
 name: bulk_insert
 version: 0.1.0
 
+description: |
+  Perform batched INSERTs on a SQL database
+
 authors:
   - Hinrik Örn Sigurðsson <hinrik.sig@gmail.com>
 
